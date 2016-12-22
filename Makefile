@@ -92,20 +92,6 @@ pretty:
 
 
 ##########################################################################
-# benchmarks
-##########################################################################
-
-# benchmarks
-json_benchmarks: benchmarks/benchmarks.cpp benchmarks/benchpress.hpp benchmarks/cxxopts.hpp src/json.hpp
-	cd benchmarks/files/numbers ; python generate.py
-	$(CXX) -std=c++11 -pthread $(CXXFLAGS) -DNDEBUG -O3 -flto -I src -I benchmarks $< $(LDFLAGS) -o $@
-	./json_benchmarks
-
-benchmarks_nonius: benchmarks/benchmarks_nonius.cpp
-	$(CXX) -std=c++11 $(CXXFLAGS) -DNDEBUG -O3 -flto -I src -I benchmarks $< $(LDFLAGS) -o $@	
-
-
-##########################################################################
 # changelog
 ##########################################################################
 

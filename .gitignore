@@ -13,10 +13,12 @@ doc/xml
 doc/html
 me.nlohmann.json.docset
 
-benchmarks/files/numbers/*.json
+benchmarks/data/numbers/*.json
 
 .idea
 cmake-build-debug
 
 
 test/test-*
+
+benchmarks/benchmarks
