@@ -90,6 +90,7 @@ void dump_msgpack_test(const std::string& filename, nonius::chronometer& meter)
     });
 }
 
+#ifdef JSON_BENCHMARK_PARSE_JSON
 NONIUS_BENCHMARK("parse jeopardy.json", [](nonius::chronometer meter)
 {
     parse_test("data/jeopardy/jeopardy.json", meter);
@@ -124,8 +125,10 @@ NONIUS_BENCHMARK("parse numbers/flounsigned_intsats.json", [](nonius::chronomete
 {
     parse_test("data/numbers/unsigned_ints.json", meter);
 });
+#endif
 
 
+#ifdef JSON_BENCHMARK_DUMP_JSON
 NONIUS_BENCHMARK("dump jeopardy.json", [](nonius::chronometer meter)
 {
     dump_test("data/jeopardy/jeopardy.json", false, meter);
@@ -145,8 +148,10 @@ NONIUS_BENCHMARK("dump numbers/signed_ints.json", [](nonius::chronometer meter)
 {
     dump_test("data/numbers/signed_ints.json", false, meter);
 });
+#endif
 
 
+#ifdef JSON_BENCHMARK_DUMP_CBOR
 NONIUS_BENCHMARK("dump jeopardy.json to CBOR", [](nonius::chronometer meter)
 {
     dump_cbor_test("data/jeopardy/jeopardy.json", meter);
@@ -161,8 +166,10 @@ NONIUS_BENCHMARK("dump numbers/signed_ints.json to CBOR", [](nonius::chronometer
 {
     dump_cbor_test("data/numbers/signed_ints.json", meter);
 });
+#endif
 
 
+#ifdef JSON_BENCHMARK_DUMP_MSGPACK
 NONIUS_BENCHMARK("dump jeopardy.json to MessagePack", [](nonius::chronometer meter)
 {
     dump_msgpack_test("data/jeopardy/jeopardy.json", meter);
@@ -177,3 +184,4 @@ NONIUS_BENCHMARK("dump numbers/signed_ints.json to MessagePack", [](nonius::chro
 {
     dump_msgpack_test("data/numbers/signed_ints.json", meter);
 });
+#endif

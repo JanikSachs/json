@@ -11,7 +11,7 @@ all:
 # clean up
 clean:
 	rm -fr json_unit json_benchmarks fuzz fuzz-testing *.dSYM
-	rm -fr benchmarks/files/numbers/*.json
+	rm -fr benchmarks/files/numbers/*.json benchmarks/benchmarks_*
 	$(MAKE) clean -Cdoc
 	$(MAKE) clean -Ctest
 
@@ -87,8 +87,7 @@ pretty:
 	   --align-reference=type --add-brackets --convert-tabs --close-templates \
 	   --lineend=linux --preserve-date --suffix=none --formatted \
 	   src/json.hpp src/json.hpp.re2c test/src/*.cpp \
-	   benchmarks/benchmarks.cpp benchmarks/benchmarks_nonius.cpp \
-	   doc/examples/*.cpp
+	   benchmarks/src/*.cpp doc/examples/*.cpp
 
 
 ##########################################################################
