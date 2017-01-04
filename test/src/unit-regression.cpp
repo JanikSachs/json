@@ -394,11 +394,31 @@ TEST_CASE("regression tests")
         //issue #230
         //CHECK(j2b.dump() == "23.42");
 
-        CHECK(j3a.dump() == "10000");
-        CHECK(j3b.dump() == "10000");
-        CHECK(j3c.dump() == "10000");
+        CHECK(j3a.dump() == "10000.0");
+        CHECK(j3b.dump() == "10000.0");
+        CHECK(j3c.dump() == "10000.0");
         //CHECK(j3b.dump() == "1E04"); // roundtrip error
         //CHECK(j3c.dump() == "1e04"); // roundtrip error
+    }
+
+    SECTION("issue #378 - locale-independent num-to-str")
+    {
+        setlocale(LC_NUMERIC, "de_DE.UTF-8");
+
+        // Verify that snprintf uses special decimal and grouping characters.
+        // Disabled, because can't trigger locale-specific behavior in AppVeyor
+#if 0
+        {
+            std::array<char, 64> buf;
+            std::snprintf(buf.data(), buf.size(), "%.2f", 12345.67);
+            CHECK(strcmp(buf.data(), "12345,67") == 0);
+        }
+#endif
+
+        // verify that dumped correctly with '.' and no grouping
+        const json j1 = 12345.67;
+        CHECK(json(12345.67).dump() == "12345.67");
+        setlocale(LC_NUMERIC, "C");
     }
 
     SECTION("issue #233 - Can't use basic_json::iterator as a base iterator for std::move_iterator")
