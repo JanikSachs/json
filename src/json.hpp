@@ -10388,27 +10388,27 @@ basic_json_parser_66:
             return result;
         }
 
- 
+
         /*!
         @brief parse string into a built-in arithmetic type as if
                the current locale is POSIX.
 
-               note: in floating-point case strtod may parse 
+               note: in floating-point case strtod may parse
                past the token's end - this is not an error.
 
                any leading blanks are not handled.
         */
         struct strtonum
         {
-        public:
+          public:
             strtonum(const char* start, const char* end)
                 : m_start(start), m_end(end)
             {}
 
-            /// return true iff parsed successfully as 
+            /// return true iff parsed successfully as
             /// number of type T.
             ///
-            /// @val shall contain parsed value, or 
+            /// @val shall contain parsed value, or
             /// undefined value if could not parse.
             template<typename T,
                      typename = typename std::enable_if<
@@ -10429,23 +10429,23 @@ basic_json_parser_66:
             {
                 const char* p = m_start;
 
-                if (!p) 
+                if (!p)
                 {
                     return false; // LCOV_EXCL_LINE
                 }
 
-                if (*p == '-' or *p == '+') 
+                if (*p == '-' or * p == '+')
                 {
                     ++p;
                 }
 
-                if (p == m_end) 
+                if (p == m_end)
                 {
                     return false; // LCOV_EXCL_LINE
                 }
 
-                while (p < m_end and *p >= '0' 
-                                 and *p <= '9') 
+                while (p < m_end and* p >= '0'
+                        and * p <= '9')
                 {
                     ++p;
                 }
@@ -10453,7 +10453,7 @@ basic_json_parser_66:
                 return p == m_end;
             }
 
-        private:
+          private:
             const char* const m_start = nullptr;
             const char* const m_end  = nullptr;
 
@@ -10499,15 +10499,15 @@ basic_json_parser_66:
                 const auto loc = localeconv();
                 assert(loc != nullptr);
                 const char decimal_point_char = !loc->decimal_point ? '.'
-                                               : loc->decimal_point[0];
- 
-                const char *data = m_start;
- 
+                                                : loc->decimal_point[0];
+
+                const char* data = m_start;
+
                 if (decimal_point_char != '.')
                 {
                     const size_t ds_pos = static_cast<size_t>(
-                        std::find(m_start, m_end, '.') - m_start );
- 
+                                              std::find(m_start, m_end, '.') - m_start );
+
                     if (ds_pos != len)
                     {
                         // copy the data into the local buffer or
@@ -10536,12 +10536,12 @@ basic_json_parser_66:
                 strtof(value, data, &endptr);
 
                 // note that reading past the end is OK, the data may be,
-                // for example, "123.", where the parsed token only 
+                // for example, "123.", where the parsed token only
                 // contains "123", but strtod will read the dot as well.
                 const bool ok = endptr >= data + len
                                 and len > 0;
 
-                if (ok and value == 0.0 and *data == '-') 
+                if (ok and value == 0.0 and * data == '-')
                 {
                     // some implementations forget to negate the zero
                     value = -0.0;
@@ -10551,15 +10551,15 @@ basic_json_parser_66:
             }
 
             signed long long parse_integral(
-                    char** endptr, 
-                    /*is_signed*/std::true_type) const
+                char** endptr,
+                /*is_signed*/std::true_type) const
             {
                 return std::strtoll(m_start, endptr, 10);
             }
 
             unsigned long long parse_integral(
-                    char** endptr, 
-                    /*is_signed*/std::false_type) const
+                char** endptr,
+                /*is_signed*/std::false_type) const
             {
                 return std::strtoull(m_start, endptr, 10);
             }
@@ -10572,16 +10572,16 @@ basic_json_parser_66:
                 const auto x = parse_integral(&endptr, std::is_signed<T>());
 
                 static_assert(std::is_signed<T>() // called right overload?
-                           == std::is_signed<decltype(x)>(), "");
+                              == std::is_signed<decltype(x)>(), "");
 
                 value = static_cast<T>(x);
 
                 return x == static_cast<decltype(x)>(value) // x fits into destination T
-                   and (x < 0) == (value < 0)               // preserved sign
-                   and (x != 0 or is_integral())            // strto[u]ll did nto fail
-                   and errno == 0                           // strto[u]ll did not overflow
-                   and m_start < m_end                      // token was not empty
-                   and endptr == m_end;                      // parsed entire token exactly
+                       and (x < 0) == (value < 0)               // preserved sign
+                       and (x != 0 or is_integral())            // strto[u]ll did nto fail
+                       and errno == 0                           // strto[u]ll did not overflow
+                       and m_start < m_end                      // token was not empty
+                       and endptr == m_end;                      // parsed entire token exactly
             }
         };
 
@@ -10591,14 +10591,14 @@ basic_json_parser_66:
         This function translates the last token into the most appropriate
         number type (either integer, unsigned integer or floating point),
         which is passed back to the caller via the result parameter.
-    
+
         integral numbers that don't fit into the the range of the respective
         type are parsed as number_float_t
 
         floating-point values do not satisfy std::isfinite predicate
         are converted to value_t::null
-        
-        throws if the entire string [m_start .. m_cursor) cannot be 
+
+        throws if the entire string [m_start .. m_cursor) cannot be
         interpreted as a number
 
         @param[out] result  @ref basic_json object to receive the number.
@@ -10607,8 +10607,8 @@ basic_json_parser_66:
         {
             assert(m_start != nullptr);
             assert(m_start < m_cursor);
-        
-            strtonum num(reinterpret_cast<const char*>(m_start), 
+
+            strtonum num(reinterpret_cast<const char*>(m_start),
                          reinterpret_cast<const char*>(m_cursor));
 
             const bool is_negative = *m_start == '-';
@@ -10622,7 +10622,8 @@ basic_json_parser_66:
             else if (is_negative)
             {
                 number_integer_t val{0};
-                if(num.to(val)) {
+                if (num.to(val))
+                {
                     result.m_type  = value_t::number_integer;
                     result.m_value = val;
                 }
@@ -10630,7 +10631,8 @@ basic_json_parser_66:
             else
             {
                 number_unsigned_t val{0};
-                if(num.to(val)) {
+                if (num.to(val))
+                {
                     result.m_type  = value_t::number_unsigned;
                     result.m_value = val;
                 }
@@ -10638,10 +10640,10 @@ basic_json_parser_66:
 
             number_float_t val{0};
             if (result.m_type != value_t::discarded
-                or !num.to(val))
+                    or !num.to(val))
             {
                 return; // already have a value from above
-                        // or couldn't parse as float_t
+                // or couldn't parse as float_t
             }
 
             result.m_type  = value_t::number_float;
